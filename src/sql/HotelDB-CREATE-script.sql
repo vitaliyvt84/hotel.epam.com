@@ -1,0 +1,110 @@
+-- START OF SCRIPT
+DROP DATABASE IF EXISTS hotel;
+
+CREATE DATABASE hotel DEFAULT CHARACTER SET utf8 ;
+USE hotel;
+
+CREATE TABLE role (
+id INT NOT NULL AUTO_INCREMENT,
+name VARCHAR(40) NOT NULL,
+PRIMARY KEY (id)
+);
+
+CREATE TABLE account (
+id INT NOT NULL AUTO_INCREMENT,
+login VARCHAR(40) NOT NULL,
+email VARCHAR(100) NOT NULL,
+password VARCHAR(100) NOT NULL,
+create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+name VARCHAR(40) NOT NULL,
+phone VARCHAR(20) NOT NULL,
+address VARCHAR(150) NOT NULL,
+role_id INT NOT NULL,
+UNIQUE KEY uq_login (login),
+UNIQUE KEY uq_email (email),
+PRIMARY KEY (id),
+CONSTRAINT fk_account_role_id FOREIGN KEY (role_id)
+	REFERENCES role (id)
+    ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+
+CREATE TABLE apartment_class (
+id INT NOT NULL AUTO_INCREMENT,
+name VARCHAR(45) NOT NULL,
+description VARCHAR(250) NULL,
+PRIMARY KEY (id),
+UNIQUE KEY uq_name (name)
+);
+
+CREATE TABLE pre_order (
+id INT NOT NULL AUTO_INCREMENT,
+number_of_adult INT UNSIGNED NOT NULL DEFAULT 1,
+number_of_child INT UNSIGNED NOT NULL DEFAULT 0,
+number_of_rooms INT UNSIGNED NOT NULL DEFAULT 1,
+create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+check_in DATETIME NOT NULL,
+check_out DATETIME NOT NULL,
+account_id INT NOT NULL,
+apartment_class_id INT NOT NULL,
+status INT NOT NULL,
+apartment_id INT NOT NULL DEFAULT 0,
+PRIMARY KEY (id),
+CONSTRAINT fk_pre_order_account_id FOREIGN KEY (account_id)
+    REFERENCES account (id)
+    ON DELETE RESTRICT ON UPDATE RESTRICT,
+CONSTRAINT fk_pre_order_apartment_class_id FOREIGN KEY (apartment_class_id)
+    REFERENCES apartment_class (id)
+    ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+CREATE TABLE apartment (
+id INT NOT NULL AUTO_INCREMENT,
+number INT NOT NULL,
+name VARCHAR(150) NOT NULL,
+price DOUBLE UNSIGNED NOT NULL,
+max_count_adult INT UNSIGNED NOT NULL DEFAULT 1,
+max_count_child INT UNSIGNED NOT NULL DEFAULT 0,
+status INT NOT NULL,
+count_of_room INT UNSIGNED NOT NULL DEFAULT 1,
+description VARCHAR(1000) NOT NULL,
+number_of_bed INT UNSIGNED NOT NULL DEFAULT 1,
+apartment_class_id INT NOT NULL,
+PRIMARY KEY (id),
+CONSTRAINT fk_apartment_apartment_class_id FOREIGN KEY (apartment_class_id)
+    REFERENCES apartment_class (id)
+    ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+CREATE TABLE apartment_image (
+id INT NOT NULL AUTO_INCREMENT,
+apartment_id INT NOT NULL,
+image_url VARCHAR(200) NOT NULL,
+image_type INT NOT NULL,
+PRIMARY KEY (id),
+CONSTRAINT fk_apartment_image_apartment_id FOREIGN KEY (apartment_id)
+    REFERENCES apartment (id)
+    ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE booking (
+id INT NOT NULL AUTO_INCREMENT,
+date_in DATETIME NOT NULL,
+date_out DATETIME NOT NULL,
+create_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+status INT NOT NULL,
+price DOUBLE UNSIGNED NOT NULL,
+number_of_adult INT UNSIGNED NOT NULL DEFAULT 1,
+number_of_child INT UNSIGNED NOT NULL DEFAULT 0,
+number_of_rooms INT UNSIGNED NOT NULL DEFAULT 1, 
+account_id INT NOT NULL,
+apartment_id INT NOT NULL,
+PRIMARY KEY (id),
+CONSTRAINT fk_booking_account_id FOREIGN KEY (account_id)
+    REFERENCES account (id)
+    ON DELETE RESTRICT ON UPDATE RESTRICT,
+CONSTRAINT fk_booking_apartment_id FOREIGN KEY (apartment_id)
+    REFERENCES apartment (id)
+    ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- END OF SCRIPT
