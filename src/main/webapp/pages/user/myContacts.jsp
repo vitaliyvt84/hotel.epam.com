@@ -9,7 +9,7 @@
 
 </head>
 <body>
-<jsp:include page="/pages/common/menu.jsp"/>
+<%@ include file="/pages/common/menu.jspf" %>
 <form class="form p-4" name="personal_data">
     <div class="container p-3 bg-light">
         <h3>Личные данные</h3>
@@ -55,6 +55,6 @@
     </div>
 </form>
 
-<jsp:include page="/pages/common/footer.jsp"/>
+<%@ include file="/pages/common/footer.jspf" %>
 </body>
 </html>

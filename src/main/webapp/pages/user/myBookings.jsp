@@ -14,7 +14,7 @@
 <head>
     <title>Мои заказы</title>
 </head>
-<jsp:include page="/pages/common/menu.jsp"/>
+<%@ include file="/pages/common/menu.jspf" %>
 <table class="table">
     <caption>Мои заказы</caption>
     <thead class="thead-light">
@@ -150,6 +150,6 @@
     </form>
     </tbody>
 </table>
-<jsp:include page="/pages/common/footer.jsp"/>
+<%@ include file="/pages/common/footer.jspf" %>
 </body>
 </html>

@@ -1,16 +1,23 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<link href="<c:url value="/css/authent.css"/>" rel="stylesheet" type="text/css"/>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<link href="<c:url value="/css/loginForm.css"/>" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="<c:url value="/css/bootstrap.min.css"/>" />
+<script src="<c:url value="/js/bootstrap.min.js"/>"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<c:set var="lang" value="${not empty param.lang ? param.lang : not empty lang ? lang : initParam['locale']}" scope="session" />
+<fmt:setLocale value="${lang}" />
+<%--<fmt:setBundle basename="messages" />--%>
+
 <html>
 <head>
-    <title>Аутентификация</title>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+    <title><fmt:message key="authentification" /></title>
 </head>
 <body>
 <div class="top">
     <span class="right">
         <a href="${app}">
-            <strong>Вернуться назад</strong>
+            <strong><fmt:message key="comeBack" /></strong>
         </a>
     </span>
     <div class="clr"></div>
@@ -19,25 +26,24 @@
 <div id="wrapper">
     <div class="user-icon"></div>
     <div class="pass-icon"></div>
-    <div class="message"><c:out value="${sessionScope.message}" /></div>
+    <div class="message">${loginMessage}</div>
     <form name="login-form" class="login-form" method="post" action="${app}/login">
         <div class="header">
-            <h1>Аутентификация</h1>
-            <span>Введите ваши регистрационные данные для входа.</span>
+            <h1><fmt:message key="authentification" /></h1>
+            <span><fmt:message key="authentFormMessage" /></span>
         </div>
 
         <div class="content">
-            <input name="login" type="text" class="input username" value="admin" onfocus="this.value=''"/>
-            <input name="password" type="password" class="input password" value="admin" onfocus="this.value=''"/>
+            <input name="login" type="text" class="input username" value="<fmt:message key="authLogin" />" onfocus="this.value=''"/>
+            <input name="password" type="password" class="input password" value="<fmt:message key="password" />" onfocus="this.value=''"/>
         </div>
 
         <div class="footer">
-            <button type="submit" name="submit" value="enter">ВОЙТИ</button>
+            <button class="btn btn-success" type="submit" name="submit" value="enter"><fmt:message key="signIn" /></button>
 
             <form>
-                <button formaction="${app}/pages/registration.jsp">Регистрация</button>
+                <button class="btn btn-success" formaction="${app}/pages/registration.jsp"><fmt:message key="registration" /></button>
             </form>
-            <%--<button type="submit" name="submit" value="registration" >Регистрация</button>--%>
         </div>
     </form>
 

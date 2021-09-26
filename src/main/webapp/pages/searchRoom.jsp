@@ -1,41 +1,34 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--<link href="<c:url value="/css/create_form.css"/>" rel="stylesheet" type="text/css"/>--%>
-<link rel="stylesheet" href="<c:url value="/css/bootstrap.min.css"/>" />
-<script src="<c:url value="/js/bootstrap.min.js"/>"></script>
+<%@ include file="/pages/common/menu.jspf" %>
 
 <html>
 <head>
-    <title>Search Room</title>
+    <title><fmt:message key="searchRoom" /></title>
 </head>
 <body>
-<jsp:include page="/pages/common/menu.jsp"/>
-
-<%--<input type="hidden" name="form" value="search_room">--%>
 <div class="container">
     <form class="search_room" name="search_room" method="post" action="${app}/searchRoom">
         <br/>
-        <h4>Пожалуйста заполните следующие данные для поиска подходящих апартаментов: </h4>
+        <h4><fmt:message key="searchRoomMessage" />: </h4>
 
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label" for="check_in">Дата заезда:</label>
+            <label class="col-sm-2 col-form-label" for="check_in"><fmt:message key="arrivalDate" />:</label>
             <div class="col-sm-3">
                 <input type="date" class="form-control" name="check_in" id="check_in" required/>
             </div>
         </div>
 
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label" for="check_out">Дата выезда:</label>
+            <label class="col-sm-2 col-form-label" for="check_out"><fmt:message key="dateOfDeparture" />:</label>
             <div class="col-sm-3">
                 <input type="date" class="form-control" name="check_out" id="check_out" required/>
             </div>
         </div>
 
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label">Количество комнат:</label>
+            <label class="col-sm-2 col-form-label"><fmt:message key="numberOfRooms" />:</label>
             <div class="col-sm-3">
                 <select class="form-select" size="4" multiple name="count_of_room">
-                    <option disabled>Выберите кол-во комнат</option>
+                    <option disabled><fmt:message key="chooseNumberRooms" /></option>
                     <option selected value="1">1</option>
                     <c:if test="${maxRoomNumber > 1}">
                         <c:forEach begin="2" end="${maxRoomNumber}" varStatus="position">
@@ -46,10 +39,10 @@
             </div>
         </div>
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label">Количество взрослых:</label>
+            <label class="col-sm-2 col-form-label"><fmt:message key="numberOfAdult" />:</label>
             <div class="col-sm-3">
                 <select class="form-select" size="4" multiple name="number_of_adult">
-                    <option disabled>Выберите кол-во взрослых</option>
+                    <option disabled><fmt:message key="chooseNumberOfAdult" /></option>
                     <option selected value="1">1</option>
                     <c:if test="${maxAdultNumber > 1}">
                         <c:forEach begin="2" end="${maxAdultNumber}" varStatus="position">
@@ -60,10 +53,10 @@
             </div>
         </div>
         <div class="row mb-3">
-            <label class="col-sm-2 col-form-label">Количество детей:</label>
+            <label class="col-sm-2 col-form-label"><fmt:message key="numberOfChild" />:</label>
             <div class="col-sm-3">
                 <select class="form-select" size="4" multiple name="number_of_child">
-                    <option disabled>Выберите кол-во детей</option>
+                    <option disabled><fmt:message key="chooseNumberOfChild" /></option>
                     <option selected value="0">0</option>
                     <c:if test="${maxChildNumber > 0}">
                         <c:forEach begin="1" end="${maxChildNumber}" varStatus="position">
@@ -73,10 +66,10 @@
                 </select>
             </div>
         </div>
-        <button class="btn btn-primary btn-md" type="submit" name="submit" value="send">Отправить</button>
+        <button class="btn btn-primary btn-md" type="submit" name="submit" value="send"><fmt:message key="send" /></button>
     </form>
 </div>
 
-<jsp:include page="/pages/common/footer.jsp"/>
+<%@ include file="/pages/common/footer.jspf" %>
 </body>
 </html>

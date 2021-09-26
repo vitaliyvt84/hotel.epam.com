@@ -10,7 +10,7 @@
     <title>Payment</title>
 </head>
 <body>
-<jsp:include page="/pages/common/menu.jsp"/>
+<%@ include file="/pages/common/menu.jspf" %>
 
 <div class="container">
     <h4>Пожалуйста введите платежные данные и нажмите 'Оплатить' или нажмите 'Отменить'!</h4>
@@ -57,8 +57,8 @@
             </form>
         </div>
     </div>
-    <jsp:include page="/pages/common/footer.jsp"/>
 </div>
 
+<%@ include file="/pages/common/footer.jspf" %>
 </body>
 </html>

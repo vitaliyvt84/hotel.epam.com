@@ -5,8 +5,6 @@
 }
 
 body {
-    /* background-image: url("../resources/image/authorization/bg.jpg");*/
-    background: url("/images/page_content/bg.jpg") repeat;
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-weight:300;
     text-align: left;
@@ -46,15 +44,11 @@ body {
     margin-top: -300px;
 
     /* Fallback */
-    background-image: url(/images/page_content/gradient.png);
+    background-image: url(../images/page_content/gradient.png);
     background-repeat: no-repeat;
 
     /* CSS3 Gradient */
     background-image: -webkit-gradient(radial, 0% 0%, 0% 100%, from(rgba(213,246,255,1)), to(rgba(213,246,255,0)));
-    background-image: -webkit-radial-gradient(50% 50%, 40% 40%, rgba(213,246,255,1), rgba(213,246,255,0));
-    background-image: -moz-radial-gradient(50% 50%, 50% 50%, rgba(213,246,255,1), rgba(213,246,255,0));
-    background-image: -ms-radial-gradient(50% 50%, 50% 50%, rgba(213,246,255,1), rgba(213,246,255,0));
-    background-image: -o-radial-gradient(50% 50%, 50% 50%, rgba(213,246,255,1), rgba(213,246,255,0));
 }
 
 /*******************
@@ -191,12 +185,12 @@ CONTENT
 
 .user-icon {
     top:147px; /* Positioning fix for slide-in, got lazy to think up of simpler method. */
-    background: rgba(65,72,72,0.75) url(/images/page_content/user-icon2.jpg) no-repeat center;
+    background: rgba(65,72,72,0.75) url(../images/page_content/user-icon.png) no-repeat center;
 }
 
 .pass-icon {
     top:221px;
-    background: rgba(65,72,72,0.75) url(/images/page_content/pass-icon.png) no-repeat center;
+    background: rgba(65,72,72,0.75) url(../images/page_content/pass-icon.png) no-repeat center;
 }
 
 /* Animation */

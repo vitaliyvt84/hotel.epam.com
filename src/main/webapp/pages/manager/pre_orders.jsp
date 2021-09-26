@@ -10,7 +10,7 @@
     <title>Предзаказы</title>
 </head>
 <body>
-<jsp:include page="/pages/common/menu.jsp"/>
+<%@ include file="/pages/common/menu.jspf" %>
 <h4>Заявки от пользователей: </h4>
 <table class="table">
     <caption>Заявки от пользователей</caption>
@@ -64,6 +64,6 @@
 </table>
 
 
-<jsp:include page="/pages/common/footer.jsp"/>
+<%@ include file="/pages/common/footer.jspf" %>
 </body>
 </html>

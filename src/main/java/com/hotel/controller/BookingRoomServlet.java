@@ -96,11 +96,7 @@ public class BookingRoomServlet extends HttpServlet {
             List<ApartmentClassDTO> apartmentClassList = ApartmentClassServiceImpl.getInstance().getAll();
             List<BookingDTO> bookingList = BookingServiceImpl.getInstance().getAll();
             List<ApartmentImageDTO> apartmentImageList = ApartmentImageServiceImpl.getInstance().getAll();
-
-            //Long numberOfRecords = ApartmentServiceImpl.getInstance().countOfRows();
-
             List<ApartmentDTO> apartmentList = null;
-            //if (req.getSession().getAttribute("opt_val") != null || req.getParameter("button_sort") != null) {
 
             String sortValue = "APC_ID";
             if (req.getSession().getAttribute("opt_val") != null) {
@@ -113,12 +109,10 @@ public class BookingRoomServlet extends HttpServlet {
             req.getSession().setAttribute("opt_val", sortValue);
 
             long numberOfRecords = 0L;
-
             if (sortValue.equals("ST")) {
                apartmentList = ApartmentServiceImpl.getInstance().getAllWhereThreeCondition(preOrderDTO.getNumberOfAdult(),
                         preOrderDTO.getNumberOfChild(), preOrderDTO.getNumberOfRooms());
                 numberOfRecords = apartmentList.size();
-
             } else {
                 apartmentList = ApartmentServiceImpl.getInstance()
                         .getAllWhereOrderByColumnOffsetNumOfRec(SortingType.valueOf(sortValue).getValue(),
@@ -126,59 +120,7 @@ public class BookingRoomServlet extends HttpServlet {
                                 preOrderDTO.getNumberOfChild(), preOrderDTO.getNumberOfRooms());
                 numberOfRecords = ApartmentServiceImpl.getInstance().countOfRowsWhere(preOrderDTO.getNumberOfAdult(),
                         preOrderDTO.getNumberOfChild(), preOrderDTO.getNumberOfRooms());
-            /*apartmentList = ApartmentServiceImpl.getInstance().getAllOrderByColumnOffsetNumberOfRecords(SortingType.valueOf(sortValue).getValue(),
-                    (page-1)*recordsPerPage, recordsPerPage);*/
             }
-
-
-            /*List<BookingDTO> dateBookingList = new ArrayList<>();
-            for (ApartmentDTO apartment : apartmentList) {
-                BookingDTO bookingDTO = new BookingDTO();
-                bookingDTO.setApartmentId(apartment.getId());
-                if (apartment.getStatus() == ApartmentStatus.NOT_AVAILABLE) {
-                    bookingDTO.setStatus(BookingStatus.NOT_AVAILABLE);
-                }
-                if (apartment.getStatus() == ApartmentStatus.AVAILABLE) {
-                    boolean flag = true;
-                    for (BookingDTO booking : bookingList) {
-                        if (booking.getApartmentId() == apartment.getId()) {
-                            if (booking.getDateOut().getTime() >= preOrderDTO.getCheckIn().getTime()
-                                    && booking.getDateIn().getTime() <= preOrderDTO.getCheckOut().getTime()) {
-                                bookingDTO.setStatus(booking.getStatus());
-                                flag = false;
-                                break;
-                            }
-                        }
-                    }
-                    if (flag) {
-                        bookingDTO.setStatus(BookingStatus.EMPTY);
-                    }
-                }
-                dateBookingList.add(bookingDTO);
-            }
-
-            dateBookingList.sort(Comparator.comparing(o -> o.getStatus().getValue()));
-            if (sortValue.equals("ST")) {
-                List<ApartmentDTO> resultList = new ArrayList<>();
-                for (int i = (page-1)*(recordsPerPage); i < page*recordsPerPage && i < numberOfRecords; i++) {
-                    for (ApartmentDTO apartment : apartmentList) {
-                        if (apartment.getId() == dateBookingList.get(i).getApartmentId()) {
-                            resultList.add(apartment);
-                            break;
-                        }
-                    }
-                }
-                apartmentList = resultList;
-            }
-            req.setAttribute("dateBookingList", dateBookingList);
-
-            int noOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
-            req.setAttribute("apartmentList", apartmentList);
-            req.setAttribute("noOfPages", noOfPages);
-            req.setAttribute("currentPage", page);
-            req.setAttribute("apartmentClassList", apartmentClassList);
-            */
-
 
             Map<Long, BookingStatus> apartmentBookingStatus = new HashMap<>();
             for (ApartmentDTO apartment : apartmentList) {
@@ -203,7 +145,6 @@ public class BookingRoomServlet extends HttpServlet {
                 }
             }
 
-
             if (sortValue.equals("ST")) {
                 LinkedHashMap<Long, BookingStatus> sortedMap = apartmentBookingStatus.entrySet().stream()
                         .sorted(Map.Entry.comparingByValue())
@@ -227,7 +168,6 @@ public class BookingRoomServlet extends HttpServlet {
             } else {
                 req.setAttribute("apartmentBookingStatus", apartmentBookingStatus);
             }
-
 
             int noOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
             req.setAttribute("apartmentList", apartmentList);

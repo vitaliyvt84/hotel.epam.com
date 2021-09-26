@@ -27,17 +27,48 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("LoginServlet#doPost");
+        logger.trace("LoginServlet#doPost");
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
         String login = req.getParameter("login");
         String password = req.getParameter("password");
 
-        UserDTO userDTO = null;
+        String pageAddress = "/login";
+        String message = "Wrong input login or password!";
+        try {
+            UserDTO userDTO = UserServiceImpl.getInstance().getByLogin(login);
+            if (userDTO != null) {
+                MessageDigest digest = null;
+                digest = MessageDigest.getInstance("SHA1");
+                byte[] hashedBytes = digest.digest(password.getBytes("UTF-8"));
+                RoleDTO roleDTO = RoleServiceImpl.getInstance().getById(userDTO.getRoleId());
+                if (roleDTO != null && userDTO.getPassword().equals(new BigInteger(1, hashedBytes).toString(16))) {
+                    req.getSession().setAttribute("user", userDTO);
+                    message = "You are logged in";
+                    String url = (String) req.getSession().getAttribute("url");
+                    pageAddress = "/";
+                    if (url != null) {
+                        pageAddress = url;
+                    }
+                }
+            }
+        } catch (NoSuchAlgorithmException e) {
+            logger.warn("Cannot check data", e);
+            req.getSession().setAttribute("errorMessage", e.getMessage());
+            pageAddress = "/pages/error.jsp";
+        } catch (DBException e) {
+            logger.warn("Cannot get data from DB", e);
+            req.getSession().setAttribute("errorMessage", e.getMessage());
+            pageAddress = "/pages/error.jsp";
+        }
+        req.getSession().setAttribute("loginMessage", message);
+        resp.sendRedirect(req.getContextPath() + pageAddress);
+
+
+        /*UserDTO userDTO = null;
         try {
             userDTO = UserServiceImpl.getInstance().getByLogin(login);
-            logger.info("userDTO = "+ userDTO);
         } catch (DBException e) {
             logger.warn("Cannot get user by login", e);
             req.setAttribute("errorMessage", e.getMessage());
@@ -75,25 +106,17 @@ public class LoginServlet extends HttpServlet {
                     } else {
                         pageAddress = "/";
                     }
-                /*if(roleDTO.getName().equals("manager")) {
-                    pageAddress = "/pages/manager/manager.jsp";
-                } else if (roleDTO.getName().equals("admin")) {
-                    pageAddress = "/pages/admin/admin.jsp";
-                } else {
-                    req.getSession().setAttribute("id", userDTO.getRoleId());
-                    pageAddress = "/";
-                }*/
                 }
             }
         } else {
             req.getSession().setAttribute("message", "Неправильно набран login или пароль!");
         }
-        resp.sendRedirect(req.getContextPath() + pageAddress);
+        resp.sendRedirect(req.getContextPath() + pageAddress);*/
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("LoginServlet#doGet");
+        logger.trace("LoginServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
         System.out.println("===========");
         System.out.println(req.getRequestURI());

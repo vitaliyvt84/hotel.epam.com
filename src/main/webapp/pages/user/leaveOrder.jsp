@@ -4,17 +4,13 @@
 <%--<link href="<c:url value="/css/create_form.css"/>" rel="stylesheet" type="text/css" />--%>
 <link rel="stylesheet" href="<c:url value="/css/bootstrap.min.css"/>" />
 <script src="<c:url value="/js/bootstrap.min.js"/>"></script>
-<c:set var="language" value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}" scope="session" />
-<fmt:setLocale value="${language}" />
-<fmt:setBundle basename="messages" />
 
-<html lang="${language}">
+<html>
 <head>
     <title><fmt:message key="leavePreOrder" /></title>
-    <jsp:include page="/pages/common/menu.jsp"/>
 </head>
 <body>
-
+<%@ include file="/pages/common/menu.jspf" %>
 <div class="container p-3">
     <div class="card">
         <div class="card-body">
@@ -100,6 +96,6 @@
     </div>
 
 </div>
-
+<%@ include file="/pages/common/footer.jspf" %>
 </body>
 </html>

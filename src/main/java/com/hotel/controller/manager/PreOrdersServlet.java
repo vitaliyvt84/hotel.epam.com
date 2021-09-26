@@ -32,10 +32,10 @@ public class PreOrdersServlet extends HttpServlet {
 
         Long preOrderId = Long.valueOf(req.getParameter("pre_order_id"));
         PreOrderDTO preOrderDTO = null;
-        Map<ApartmentClassDTO, List<ApartmentDTO>> resultMap = new TreeMap<>(Comparator.comparing(ApartmentClassDTO::getName));
+        /*Map<ApartmentClassDTO, List<ApartmentDTO>> resultMap = new TreeMap<>(Comparator.comparing(ApartmentClassDTO::getName));*/
         try {
             preOrderDTO = PreOrderServiceImpl.getInstance().getById(preOrderId);
-            List<ApartmentDTO> apartmentList = ApartmentServiceImpl.getInstance().getAll();
+            /*List<ApartmentDTO> apartmentList = ApartmentServiceImpl.getInstance().getAll();
             ApartmentClassDTO apartmentClass = ApartmentClassServiceImpl.getInstance().getById(preOrderDTO.getApartmentClassId());
             List<BookingDTO> bookingList = BookingServiceImpl.getInstance().getAll();
 
@@ -60,17 +60,17 @@ public class PreOrdersServlet extends HttpServlet {
                     }
                 }
             }
-            resultMap.put(apartmentClass, resultList);
+            resultMap.put(apartmentClass, resultList);*/
         } catch (DBException e) {
             logger.warn("Cannot get parameters", e);
             req.setAttribute("errorMessage", e.getMessage());
             req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
         }
-        req.getSession().setAttribute("mapAClassAList", resultMap);
+        /*req.getSession().setAttribute("mapAClassAList", resultMap);*/
         req.getSession().setAttribute("preOrderDTO", preOrderDTO);
-        long diff = TimeUnit.DAYS.convert(preOrderDTO.getCheckOut().getTime() - preOrderDTO.getCheckIn().getTime(), TimeUnit.MILLISECONDS);
+        /*long diff = TimeUnit.DAYS.convert(preOrderDTO.getCheckOut().getTime() - preOrderDTO.getCheckIn().getTime(), TimeUnit.MILLISECONDS);
         logger.info("Days between two dates: " + diff);
-        req.getSession().setAttribute("numberOfDays", diff);
+        req.getSession().setAttribute("numberOfDays", diff);*/
 
         resp.sendRedirect(req.getContextPath()+"/bookingRoom");
     }
@@ -96,8 +96,6 @@ public class PreOrdersServlet extends HttpServlet {
             req.setAttribute("users", users);
             req.setAttribute("apartmentClasses", apartmentClasses);
         }
-        logger.info(preOrders.get(0).getCheckIn());
-        logger.info(preOrders.get(0).getCheckOut());
         req.getRequestDispatcher("/pages/manager/pre_orders.jsp").forward(req, resp);
     }
 }

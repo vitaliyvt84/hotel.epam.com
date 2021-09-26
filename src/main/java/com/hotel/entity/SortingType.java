@@ -1,7 +1,7 @@
 package com.hotel.entity;
 
 public enum SortingType {
-    APC_ID("apartment_class_id"), PR("price"), PRD("price DESC"), MCA("max_count_adult"), NM("name"), ST("status");
+    APC_ID("apartment_class_id"), PR("price"), PRD("price DESC"), MCA("max_count_adult"), ST("status");
 
     private String value;
 

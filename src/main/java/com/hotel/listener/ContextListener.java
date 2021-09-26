@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebListener;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext sContext = sce.getServletContext();
@@ -19,7 +20,6 @@ public class ContextListener implements ServletContextListener {
         String contextPath = sContext.getContextPath();
         sContext.setAttribute("app", contextPath);
 
-        //System.out.println("app ==> " + contextPath);
         final Logger logger = LogManager.getLogger(ContextListener.class);
         logger.debug("path = " + path);
 

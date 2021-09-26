@@ -14,7 +14,7 @@
     <title>Обзор комнаты</title>
 </head>
 <body>
-<jsp:include page="/pages/common/menu.jsp"/>
+<%@ include file="/pages/common/menu.jspf" %>
 
 <div class="row border justify-content-md-center">
     <div class="col-md-8 p-4 m-">
@@ -86,9 +86,6 @@
 </div>
 
 
-
-
-
-<jsp:include page="/pages/common/footer.jsp"/>
+<%@ include file="/pages/common/footer.jspf" %>
 </body>
 </html>

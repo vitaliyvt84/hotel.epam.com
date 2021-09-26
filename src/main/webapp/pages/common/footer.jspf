@@ -1,0 +1,2 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<p class="text-center">Copyright © 2021 Hotel.com™. <fmt:message key="allRights" /></p>
