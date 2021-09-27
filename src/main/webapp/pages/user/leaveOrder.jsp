@@ -1,16 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%--<link href="<c:url value="/css/create_form.css"/>" rel="stylesheet" type="text/css" />--%>
-<link rel="stylesheet" href="<c:url value="/css/bootstrap.min.css"/>" />
-<script src="<c:url value="/js/bootstrap.min.js"/>"></script>
+<%@ include file="/pages/common/menu.jspf" %>
 
 <html>
 <head>
     <title><fmt:message key="leavePreOrder" /></title>
 </head>
 <body>
-<%@ include file="/pages/common/menu.jspf" %>
+
 <div class="container p-3">
     <div class="card">
         <div class="card-body">
@@ -92,10 +88,9 @@
                 <button class="btn btn-primary btn-md" form="leave_order" type="reset" name="resetPreOrder"><fmt:message key="clearTheForm" /></button>
             </form>
         </div>
-
     </div>
-
 </div>
+
 <%@ include file="/pages/common/footer.jspf" %>
 </body>
 </html>

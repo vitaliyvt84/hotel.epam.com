@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ include file="/pages/common/menu.jspf" %>
 <%@ taglib prefix="options" uri="http://com.hotel/options" %>
-<link href="<c:url value="/css/create_form.css"/>" rel="stylesheet" type="text/css" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
@@ -12,24 +10,24 @@
 
 <html>
 <head>
-    <title>Мои заказы</title>
+    <title><fmt:message key="myOrders" /></title>
 </head>
-<%@ include file="/pages/common/menu.jspf" %>
+
 <table class="table">
-    <caption>Мои заказы</caption>
+    <caption><fmt:message key="myOrders" /></caption>
     <thead class="thead-light">
     <tr class="table-warning">
-        <th>Номер заказа</th>
-        <th>Фото</th>
-        <th>Дата заезда</th>
-        <th>Дата выезда</th>
-        <th>Номер апартаментов</th>
-        <th>Название апартаментов</th>
-        <th>Класс апартаментов</th>
-        <th>Кол-во посетителей</th>
-        <th>Кол-во комнат</th>
-        <th>Цена</th>
-        <th>Статус заказа</th>
+        <th><fmt:message key="orderNumber" /></th>
+        <th><fmt:message key="photo" /></th>
+        <th><fmt:message key="arrivalDate" /></th>
+        <th><fmt:message key="dateOfDeparture" /></th>
+        <th><fmt:message key="apartmentNumber" /></th>
+        <th><fmt:message key="apartmentName" /></th>
+        <th><fmt:message key="apartmentClass" /></th>
+        <th><fmt:message key="numberOfVisitors" /></th>
+        <th><fmt:message key="numberOfRooms" /></th>
+        <th><fmt:message key="price" /></th>
+        <th><fmt:message key="orderStatus" /></th>
     </tr>
     </thead>
     <tbody>
@@ -59,11 +57,11 @@
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls${booking.apartmentId}"  data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Предыдущий</span>
+                        <span class="visually-hidden"><fmt:message key="previous" /></span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#carouselControls${booking.apartmentId}"  data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Следующий</span>
+                        <span class="visually-hidden"><fmt:message key="next" /></span>
                     </button>
                 </div>
             </td>
@@ -82,20 +80,20 @@
                 </c:if>
             </c:forEach>
             <td>
-                    ${booking.numberOfAdult} взрослых
-                    ${booking.numberOfChild} детей
+                    ${booking.numberOfAdult} <fmt:message key="adults" />
+                    ${booking.numberOfChild} <fmt:message key="children" />
             </td>
             <td>${booking.numberOfRooms}</td>
             <td>${booking.price}</td>
             <c:if test="${booking.status.value == 1}">
-                <td bgcolor="#adff2f">Забронирован</td>
+                <td bgcolor="#adff2f"><fmt:message key="booked" /></td>
 
-                    <td><button class="btn btn-success" type="submit" name="booking_id" value="${booking.id}">Оплатить</button></td>
-                    <td><button class="btn btn-warning" type="submit" name="cancel_booking_id" value="${booking.id}">Отменить</button></td>
+                    <td><button class="btn btn-success" type="submit" name="booking_id" value="${booking.id}"><fmt:message key="pay" /></button></td>
+                    <td><button class="btn btn-warning" type="submit" name="cancel_booking_id" value="${booking.id}"><fmt:message key="cancel" /></button></td>
 
             </c:if>
             <c:if test="${booking.status.value == 2}">
-                <td bgcolor="#adff2f">Оплачен</td>
+                <td bgcolor="#adff2f"><fmt:message key="paidUp" /></td>
             </c:if>
         </tr>
 
@@ -109,18 +107,18 @@
 </br>
 
 <table class="table">
-    <caption>Мои пред заказы</caption>
+    <caption><fmt:message key="myPreOrders" /></caption>
     <thead class="thead-light">
     <tr class="table-warning">
         <th>ID</th>
-        <th>Время создания</th>
-        <th>Дата заезда</th>
-        <th>Дата выезда</th>
-        <th>Класс апартаментов</th>
-        <th>Кол-во взрослых</th>
-        <th>Кол-во детей</th>
-        <th>Кол-во комнат</th>
-        <th>Статус заказа</th>
+        <th><fmt:message key="createTime" /></th>
+        <th><fmt:message key="arrivalDate" /></th>
+        <th><fmt:message key="dateOfDeparture" /></th>
+        <th><fmt:message key="apartmentClass" /></th>
+        <th><fmt:message key="numberOfAdult" /></th>
+        <th><fmt:message key="numberOfChild" /></th>
+        <th><fmt:message key="numberOfRooms" /></th>
+        <th><fmt:message key="orderStatus" /></th>
     </tr>
     </thead>
     <tbody>
@@ -143,7 +141,7 @@
             <td bgcolor="#adff2f"><options:ch_us_st status="${preOrder.status.value}"/></td>
 
             <c:if test="${preOrder.status.value == 1}">
-                <td><button class="btn btn-success" type="submit" name="pre_order_id" value="${preOrder.id}">Просмотреть</button>${preOrder.id}</td>
+                <td><button class="btn btn-success" type="submit" name="pre_order_id" value="${preOrder.id}"><fmt:message key="view" /></button>${preOrder.id}</td>
             </c:if>
         </tr>
     </c:forEach>

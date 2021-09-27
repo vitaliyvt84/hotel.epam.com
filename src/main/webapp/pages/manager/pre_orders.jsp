@@ -1,33 +1,29 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ include file="/pages/common/menu.jspf" %>
 <%@ taglib prefix="options" uri="http://com.hotel/options" %>
-<link rel="stylesheet" href="<c:url value="/css/bootstrap.min.css"/>" />
-<script src="<c:url value="/js/bootstrap.min.js"/>"></script>
 
 <html>
 <head>
-    <title>Предзаказы</title>
+    <title><fmt:message key="pre-orders" /></title>
 </head>
 <body>
-<%@ include file="/pages/common/menu.jspf" %>
-<h4>Заявки от пользователей: </h4>
+<h4><fmt:message key="requestsFromUsers" />: </h4>
 <table class="table">
-    <caption>Заявки от пользователей</caption>
+    <caption><fmt:message key="requestsFromUsers" /></caption>
     <thead class="thead-light">
     <tr class="table-primary">
-        <th>Id заявки</th>
-        <th>Имя пользователя</th>
-        <th>Телефон</th>
+        <th><fmt:message key="preOrderId" /></th>
+        <th><fmt:message key="username" /></th>
+        <th><fmt:message key="phone-short" /></th>
         <th>E-mail</th>
-        <th>Класс апартаментов</th>
-        <th>Время регистрации заявки</th>
-        <th>Кол-во взрослых</th>
-        <th>Кол-во детей</th>
-        <th>Кол-во комнат</th>
-        <th>Дата заезда</th>
-        <th>Дата выезда</th>
-        <th>Статус заказа</th>
+        <th><fmt:message key="apartmentClass" /></th>
+        <th><fmt:message key="preOrderRegistrationTime" /></th>
+        <th><fmt:message key="numberOfAdult" /></th>
+        <th><fmt:message key="numberOfChild" /></th>
+        <th><fmt:message key="numberOfRooms" /></th>
+        <th><fmt:message key="arrivalDate" /></th>
+        <th><fmt:message key="dateOfDeparture" /></th>
+        <th><fmt:message key="orderStatus" /></th>
     </tr>
     </thead>
     <tbody>
@@ -55,14 +51,13 @@
             <td bgcolor="#adff2f"><options:ch_mn_st status="${preOrder.status}"/></td>
             <c:if test="${preOrder.status.value == 0}">
                 <form class="pre_orders_list" name="pre_orders_list" method="post" action="${app}/preOrders">
-                    <td><button class="btn btn-warning" type="submit" name="pre_order_id" value="${preOrder.id}">Подобрать</button></td>
+                    <td><button class="btn btn-warning" type="submit" name="pre_order_id" value="${preOrder.id}"><fmt:message key="pickUp" /></button></td>
                 </form>
             </c:if>
         </tr>
     </c:forEach>
     </tbody>
 </table>
-
 
 <%@ include file="/pages/common/footer.jspf" %>
 </body>

@@ -46,23 +46,23 @@ public class BookingRoomServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/preOrders");
 
         } else {
-            logger.info("user_choose = " + req.getParameter("user_choose"));
             PreOrderDTO preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
             long apartmentId = Long.valueOf(req.getParameter("user_choose"));
             preOrderDTO.setApartmentId(apartmentId);
             req.getSession().setAttribute("preOrderDTO", preOrderDTO);
 
-            UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
-            System.out.println("user = " + userDTO);
-
-            if (userDTO != null) {
-                //req.getRequestDispatcher("/pages/user/reviewRoom.jsp").forward(req, resp);
-                resp.sendRedirect(req.getContextPath() + "/reviewRoom");
-            } else {
-                req.getSession().setAttribute("url", req.getServletPath());
-                req.getSession().setAttribute("message", "You need to be register");
-                resp.sendRedirect(req.getContextPath() + "/login");
+            UserDTO userDTO = null;
+            if (req.getSession().getAttribute("user") != null) {
+                userDTO = (UserDTO) req.getSession().getAttribute("user");
             }
+
+            String address = "/reviewRoom";
+            if (userDTO == null) {
+                req.getSession().setAttribute("url", req.getServletPath());
+                req.getSession().setAttribute("loginMessage", "You need to be register");
+                address = "/login";
+            }
+            resp.sendRedirect(req.getContextPath() + address);
         }
     }
 
@@ -70,20 +70,11 @@ public class BookingRoomServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("BookingRoomServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
-        /*for (Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
-            logger.info(entry.getKey() + " " + entry.getValue());
-        }
-        logger.info("============");
-        for (String valueName : req.getSession().getValueNames()) {
-            logger.info(valueName);
-        }*/
-
 
         PreOrderDTO preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
         long diff = TimeUnit.DAYS.convert(preOrderDTO.getCheckOut().getTime()
                 - preOrderDTO.getCheckIn().getTime(), TimeUnit.MILLISECONDS);
         req.setAttribute("numberOfDays", diff);
-
 
         //PAGINATION
         int page = 1;

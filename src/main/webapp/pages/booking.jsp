@@ -169,13 +169,13 @@
                                     <h5 class="card-title">${apartment.name}</h5>
                                     <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="numberOfRooms" />:</h6>
                                     <p class="card-text">${apartment.countOfRoom}</p>
-                                    <h6 class="card-subtitle mb-2 text-muted">Максимальное кол-во взрослых:</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="maxAdultNumber" />:</h6>
                                     <p class="card-text">${apartment.maxCountOfAdult}</p>
-                                    <h6 class="card-subtitle mb-2 text-muted">Максимальное кол-во детей:</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="maxChildrenNumber" />:</h6>
                                     <p class="card-text">${apartment.maxCountOfChild}</p>
-                                    <h6 class="card-subtitle mb-2 text-muted">Цена(сутки/чел):</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="priceDay" />:</h6>
                                     <p class="card-text">${apartment.price}</p>
-                                    <h6 class="card-subtitle mb-2 text-muted">Суммарная стоимость:</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="totalPrice" />:</h6>
                                     <p class="card-text"><my:total_price num_ad="${preOrderDTO.numberOfAdult}" num_ch="${preOrderDTO.numberOfChild}"
                                                                          ap_price="${apartment.price}" num_day="${numberOfDays}"/></p>
                                 </div>
@@ -184,7 +184,7 @@
                         <div class="col-md-4 p-3">
                             <div class="card">
                                 <div class="card-body">
-                                    <h6 class="card-subtitle mb-2 text-muted">Статус номера:</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="roomStatus" />:</h6>
                                     <c:choose>
                                         <c:when test="${apartmentBookingStatus[apartment.id] eq 'EMPTY'}">
                                             <p class="card-text bg-success">${apartmentBookingStatus[apartment.id]}</p>
@@ -202,7 +202,7 @@
                                     </c:forEach>
 
                                     <c:if test="${apartmentBookingStatus[apartment.id].value eq 0}">
-                                        <button class="btn btn-success" type="submit" name="manager_choose" value="${apartment.id}">Отправить клиенту</button>
+                                        <button class="btn btn-success" type="submit" name="manager_choose" value="${apartment.id}"><fmt:message key="sendToClient" /></button>
                                     </c:if>
                                 </div>
                             </div>
@@ -243,11 +243,11 @@
                                     </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls${apartment.id}"  data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Предыдущий</span>
+                                        <span class="visually-hidden"><fmt:message key="previous" /></span>
                                     </button>
                                     <button class="carousel-control-next" type="button" data-bs-target="#carouselControls${apartment.id}"  data-bs-slide="next">
                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Следующий</span>
+                                        <span class="visually-hidden"><fmt:message key="next" /></span>
                                     </button>
                                 </div>
                             </div>
@@ -256,15 +256,15 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">${apartment.name}</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">Количество комнат:</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="numberOfRooms" />:</h6>
                                         <p class="card-text">${apartment.countOfRoom}</p>
-                                        <h6 class="card-subtitle mb-2 text-muted">Максимальное кол-во взрослых:</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="maxAdultNumber" />:</h6>
                                         <p class="card-text">${apartment.maxCountOfAdult}</p>
-                                        <h6 class="card-subtitle mb-2 text-muted">Максимальное кол-во детей:</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="maxChildrenNumber" />:</h6>
                                         <p class="card-text">${apartment.maxCountOfChild}</p>
-                                        <h6 class="card-subtitle mb-2 text-muted">Цена(сутки/чел):</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="priceDay" />:</h6>
                                         <p class="card-text">${apartment.price}</p>
-                                        <h6 class="card-subtitle mb-2 text-muted">Суммарная стоимость:</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="totalPrice" />:</h6>
                                         <p class="card-text"><my:total_price num_ad="${preOrderDTO.numberOfAdult}" num_ch="${preOrderDTO.numberOfChild}"
                                                                              ap_price="${apartment.price}" num_day="${numberOfDays}"/></p>
                                     </div>
@@ -273,7 +273,7 @@
                             <div class="col-md-4 p-3">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="card-subtitle mb-2 text-muted">Статус номера:</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="roomStatus" />:</h6>
                                         <c:choose>
                                             <c:when test="${apartmentBookingStatus[apartment.id] eq 'EMPTY'}">
                                                 <p class="card-text bg-success">${apartmentBookingStatus[apartment.id]}</p>
@@ -283,7 +283,7 @@
                                             </c:otherwise>
                                         </c:choose>
 
-                                        <h6 class="card-subtitle mb-2 text-muted">Класс номера:</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted"><fmt:message key="apartmentClass" />:</h6>
                                         <c:forEach items="${apartmentClassList}" var="apartmentClass">
                                             <c:if test="${apartment.apartmentClassId == apartmentClass.id}">
                                                 <p class="card-text">${apartmentClass.name}</p>
@@ -291,7 +291,7 @@
                                         </c:forEach>
 
                                         <c:if test="${apartmentBookingStatus[apartment.id].value eq 0}">
-                                            <button class="btn btn-success" type="submit" name="user_choose" value="${apartment.id}">Посмотреть детальную информацию</button>
+                                            <button class="btn btn-success" type="submit" name="user_choose" value="${apartment.id}"><fmt:message key="viewDetailedInf" /></button>
                                         </c:if>
                                     </div>
                                 </div>
@@ -302,7 +302,6 @@
         </form>
     </c:otherwise>
 </c:choose>
-
 
 <%@ include file="/pages/common/footer.jspf" %>
 </body>

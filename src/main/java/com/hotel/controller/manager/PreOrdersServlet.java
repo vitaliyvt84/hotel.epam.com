@@ -32,41 +32,13 @@ public class PreOrdersServlet extends HttpServlet {
 
         Long preOrderId = Long.valueOf(req.getParameter("pre_order_id"));
         PreOrderDTO preOrderDTO = null;
-        /*Map<ApartmentClassDTO, List<ApartmentDTO>> resultMap = new TreeMap<>(Comparator.comparing(ApartmentClassDTO::getName));*/
         try {
             preOrderDTO = PreOrderServiceImpl.getInstance().getById(preOrderId);
-            /*List<ApartmentDTO> apartmentList = ApartmentServiceImpl.getInstance().getAll();
-            ApartmentClassDTO apartmentClass = ApartmentClassServiceImpl.getInstance().getById(preOrderDTO.getApartmentClassId());
-            List<BookingDTO> bookingList = BookingServiceImpl.getInstance().getAll();
-
-            List<ApartmentDTO> resultList = new ArrayList<>();
-
-            for (ApartmentDTO apartment : apartmentList) {
-                if (preOrderDTO.getApartmentClassId() == apartment.getApartmentClassId()
-                        && preOrderDTO.getNumberOfRooms() <= apartment.getCountOfRoom()
-                        && preOrderDTO.getNumberOfAdult() <= apartment.getMaxCountOfAdult()
-                        && preOrderDTO.getNumberOfChild() <= apartment.getMaxCountOfChild()) {
-                    boolean flag = true;
-                    for (BookingDTO booking : bookingList) {
-                        if (booking.getApartmentId() == apartment.getId()
-                                && booking.getDateOut().getTime() >= preOrderDTO.getCheckIn().getTime()
-                                && booking.getDateIn().getTime() <= preOrderDTO.getCheckOut().getTime()) {
-                            flag = false;
-                            break;
-                        }
-                    }
-                    if (flag) {
-                        resultList.add(apartment);
-                    }
-                }
-            }
-            resultMap.put(apartmentClass, resultList);*/
         } catch (DBException e) {
             logger.warn("Cannot get parameters", e);
             req.setAttribute("errorMessage", e.getMessage());
             req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
         }
-        /*req.getSession().setAttribute("mapAClassAList", resultMap);*/
         req.getSession().setAttribute("preOrderDTO", preOrderDTO);
         /*long diff = TimeUnit.DAYS.convert(preOrderDTO.getCheckOut().getTime() - preOrderDTO.getCheckIn().getTime(), TimeUnit.MILLISECONDS);
         logger.info("Days between two dates: " + diff);
