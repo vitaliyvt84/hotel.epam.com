@@ -75,10 +75,9 @@
         <p class="card-text">${totalPrice}</p>
 
         <form class="order" name="order" method="post" action="${app}/reviewRoom">
-            <button class="btn btn-success" type="submit" name="book_room" value="book">Забронировать комнату</button>
-            <button class="btn btn-warning" type="submit" name="book_room" value="cancel">Отменить</button>
+            <button class="btn btn-success" type="submit" name="book_room" value="book"><fmt:message key="bookRoom" /></button>
+            <button class="btn btn-warning" type="submit" name="book_room" value="cancel"><fmt:message key="cancel" /></button>
         </form>
-
     </div>
 </div>
 

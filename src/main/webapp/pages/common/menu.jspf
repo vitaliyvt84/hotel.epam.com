@@ -30,7 +30,7 @@
         <li><a href="${app}/contactUs"><fmt:message key="contactUs" /></a></li>
         <li><a href="${app}/searchRoom"><fmt:message key="searchRoom" /></a></li>
         <c:if test="${sessionScope.user != null && sessionScope.user.roleId == 3}">
-            <li><a href="${app}/personalCabinet?param=1"><fmt:message key="leavePreOrder" /></a></li>
+            <li><a href="${app}/leaveOrder"><fmt:message key="leavePreOrder" /></a></li>
             <li><a href="${app}/userOrders"><fmt:message key="orders" /></a></li>
         </c:if>
         <c:if test="${sessionScope.user != null && sessionScope.user.roleId == 2}">
@@ -42,13 +42,12 @@
             <li><a href="${app}/roomsClasses">Классы номеров</a></li>
         </c:if>
         <c:if test="${sessionScope.user != null}">
-            <li><a href="${app}/personalCabinet?param=2"><fmt:message key="personalData" /></a></li>
+            <li><a href="${app}/myContacts"><fmt:message key="personalData" /></a></li>
             <li><a href="${app}/logout"><fmt:message key="logout" /></a></li>
         </c:if>
         <c:if test="${user == null}">
             <li><a href="${app}/login"><fmt:message key="login" /></a></li>
             <li><a href="${app}/registration"><fmt:message key="registration" /></a></li>
         </c:if>
-
     </ul>
 </nav>

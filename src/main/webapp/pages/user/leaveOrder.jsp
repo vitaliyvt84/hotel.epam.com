@@ -10,8 +10,8 @@
 <div class="container p-3">
     <div class="card">
         <div class="card-body">
-            <form name="leaveOrder" method="post" id="leave_order" action="${app}/personalCabinet">
-                <input type="hidden" name="form" value="leave_order">
+            <form name="leaveOrder" method="post" id="leave_order" action="${app}/leaveOrder">
+                <%--<input type="hidden" name="form" value="leave_order">--%>
 
                 <br/>
                 <h4><fmt:message key="leaveOrderMessage" />: </h4>
