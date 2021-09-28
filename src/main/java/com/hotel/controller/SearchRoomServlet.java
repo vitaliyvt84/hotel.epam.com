@@ -19,6 +19,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * This class uses to handle requests from searchRoom.jsp. Method doGet prepares data for searchRoom.jsp. Method doPost
+ * processes data from searchRoom.jsp and saves them to pre-order entity, which is necessary for booking.jsp
  *
  */
 @WebServlet("/searchRoom")
@@ -27,15 +29,9 @@ public class SearchRoomServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("SearchRoomServlet#doPost");
+        logger.trace("SearchRoomServlet#doPost");
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
-
-        logger.info("Check-in: " + req.getParameter("check_in"));
-        logger.info("Check-out: " + req.getParameter("check_out"));
-        logger.info("Count_of_room: " + req.getParameter("count_of_room"));
-        logger.info("Number_of_adult: " + req.getParameter("number_of_adult"));
-        logger.info("Number_of_child: " + req.getParameter("number_of_child"));
 
         Date checkIn = null;
         Date checkOut = null;
@@ -44,7 +40,6 @@ public class SearchRoomServlet extends HttpServlet {
             checkIn = format.parse(req.getParameter("check_in"));
             checkOut = format.parse(req.getParameter("check_out"));
             long diff = TimeUnit.DAYS.convert(checkOut.getTime() - checkIn.getTime(), TimeUnit.MILLISECONDS);
-            logger.info("Days between two dates: " + diff);
             req.getSession().setAttribute("numberOfDays", diff);
         } catch (ParseException e) {
             logger.warn("Cannot parse date", e);
@@ -69,7 +64,7 @@ public class SearchRoomServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("SearchRoomServlet#doGet");
+        logger.trace("SearchRoomServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
 
         List<ApartmentDTO> apartmentList = null;

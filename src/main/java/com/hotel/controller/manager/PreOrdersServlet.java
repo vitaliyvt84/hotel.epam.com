@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class uses to handle requests from pre_order.jsp. doGet method sends to pre_order.jsp information about pre-orders
@@ -26,7 +25,7 @@ public class PreOrdersServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("PaymentServlet#doPost");
+        logger.trace("PaymentServlet#doPost");
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
@@ -40,16 +39,13 @@ public class PreOrdersServlet extends HttpServlet {
             req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
         }
         req.getSession().setAttribute("preOrderDTO", preOrderDTO);
-        /*long diff = TimeUnit.DAYS.convert(preOrderDTO.getCheckOut().getTime() - preOrderDTO.getCheckIn().getTime(), TimeUnit.MILLISECONDS);
-        logger.info("Days between two dates: " + diff);
-        req.getSession().setAttribute("numberOfDays", diff);*/
 
         resp.sendRedirect(req.getContextPath()+"/bookingRoom");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("PreOrdersServlet#doGet");
+        logger.trace("PreOrdersServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
         List<PreOrderDTO> preOrders = null;
         List<UserDTO> users = null;

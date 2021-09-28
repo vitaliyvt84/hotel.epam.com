@@ -35,7 +35,7 @@ public class LeaveOrderServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("LeaveOrderServlet#doPost");
+        logger.trace("LeaveOrderServlet#doPost");
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
@@ -78,7 +78,7 @@ public class LeaveOrderServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("LeaveOrderServlet#doGet");
+        logger.trace("LeaveOrderServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
 
         List<ApartmentDTO> apartmentList = null;

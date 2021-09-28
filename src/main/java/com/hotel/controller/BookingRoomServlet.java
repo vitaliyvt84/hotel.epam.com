@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
+ * This class uses to handle requests from booking.jsp. doGet method prepares data for booking.jsp. Method doPost handles
+ * data from booking.jsp and if it was manager choice the status of user pre-order changes to PROCESSED and user can overview
+ * the apartment. If it was user choice and user is logged in then it goes to reviewRoom.jsp, otherwise it goes to login.jsp
  *
  */
 @WebServlet("/bookingRoom")
@@ -26,153 +29,159 @@ public class BookingRoomServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("BookingRoomServlet#doPost");
+        logger.trace("BookingRoomServlet#doPost");
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
-        if (req.getParameter("choose_room").equals("manager")) {
-            logger.info("manager_choose = " + req.getParameter("manager_choose"));
-            PreOrderDTO preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
-            long apartmentId = Long.valueOf(req.getParameter("manager_choose"));
-            preOrderDTO.setApartmentId(apartmentId);
-            preOrderDTO.setStatus(PreOrderStatus.PROCESSED);
-            try {
-                PreOrderServiceImpl.getInstance().update(preOrderDTO);
-            } catch (DBException e) {
-                logger.warn("Cannot update parameters", e);
-                req.setAttribute("errorMessage", e.getMessage());
-                req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
-            }
-            resp.sendRedirect(req.getContextPath() + "/preOrders");
-
-        } else {
-            PreOrderDTO preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
-            long apartmentId = Long.valueOf(req.getParameter("user_choose"));
-            preOrderDTO.setApartmentId(apartmentId);
-            req.getSession().setAttribute("preOrderDTO", preOrderDTO);
-
-            UserDTO userDTO = null;
-            if (req.getSession().getAttribute("user") != null) {
-                userDTO = (UserDTO) req.getSession().getAttribute("user");
-            }
-
-            String address = "/reviewRoom";
-            if (userDTO == null) {
-                req.getSession().setAttribute("url", req.getServletPath());
-                req.getSession().setAttribute("loginMessage", "You need to be register");
-                address = "/login";
-            }
-            resp.sendRedirect(req.getContextPath() + address);
+        PreOrderDTO preOrderDTO = null;
+        if (req.getSession().getAttribute("preOrderDTO") != null) {
+            preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
         }
+
+        String address = "/preOrders";
+        if (preOrderDTO != null) {
+            if (req.getParameter("choose_room").equals("manager")) {
+                long apartmentId = Long.valueOf(req.getParameter("manager_choose"));
+                preOrderDTO.setApartmentId(apartmentId);
+                preOrderDTO.setStatus(PreOrderStatus.PROCESSED);
+                try {
+                    PreOrderServiceImpl.getInstance().update(preOrderDTO);
+                } catch (DBException e) {
+                    logger.warn("Cannot update parameters", e);
+                    req.setAttribute("errorMessage", e.getMessage());
+                    req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
+                }
+            } else {
+                long apartmentId = Long.valueOf(req.getParameter("user_choose"));
+                preOrderDTO.setApartmentId(apartmentId);
+                req.getSession().setAttribute("preOrderDTO", preOrderDTO);
+
+                UserDTO userDTO = null;
+                if (req.getSession().getAttribute("user") != null) {
+                    userDTO = (UserDTO) req.getSession().getAttribute("user");
+                }
+
+                address = "/reviewRoom";
+                if (userDTO == null) {
+                    req.getSession().setAttribute("url", req.getServletPath());
+                    req.getSession().setAttribute("loginMessage", "You need to be register");
+                    address = "/login";
+                }
+            }
+        }
+        resp.sendRedirect(req.getContextPath() + address);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("BookingRoomServlet#doGet");
+        logger.trace("BookingRoomServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
 
-        PreOrderDTO preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
-        long diff = TimeUnit.DAYS.convert(preOrderDTO.getCheckOut().getTime()
-                - preOrderDTO.getCheckIn().getTime(), TimeUnit.MILLISECONDS);
-        req.setAttribute("numberOfDays", diff);
-
-        //PAGINATION
-        int page = 1;
-        int recordsPerPage = 7;
-        if (req.getParameter("page") != null) {
-            page = Integer.parseInt(req.getParameter("page"));
+        PreOrderDTO preOrderDTO = null;
+        if (req.getSession().getAttribute("preOrderDTO") != null) {
+            preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
         }
+        if (preOrderDTO != null) {
+            long diff = TimeUnit.DAYS.convert(preOrderDTO.getCheckOut().getTime()
+                    - preOrderDTO.getCheckIn().getTime(), TimeUnit.MILLISECONDS);
+            req.setAttribute("numberOfDays", diff);
 
-        try {
-            List<ApartmentClassDTO> apartmentClassList = ApartmentClassServiceImpl.getInstance().getAll();
-            List<BookingDTO> bookingList = BookingServiceImpl.getInstance().getAll();
-            List<ApartmentImageDTO> apartmentImageList = ApartmentImageServiceImpl.getInstance().getAll();
-            List<ApartmentDTO> apartmentList = null;
-
-            String sortValue = "APC_ID";
-            if (req.getSession().getAttribute("opt_val") != null) {
-                sortValue = String.valueOf(req.getSession().getAttribute("opt_val"));
-            }
-            if (req.getParameter("button_sort") != null) {
-                sortValue = req.getParameter("sort_by");
-                logger.info("SORT BY " + req.getParameter("sort_by"));
-            }
-            req.getSession().setAttribute("opt_val", sortValue);
-
-            long numberOfRecords = 0L;
-            if (sortValue.equals("ST")) {
-               apartmentList = ApartmentServiceImpl.getInstance().getAllWhereThreeCondition(preOrderDTO.getNumberOfAdult(),
-                        preOrderDTO.getNumberOfChild(), preOrderDTO.getNumberOfRooms());
-                numberOfRecords = apartmentList.size();
-            } else {
-                apartmentList = ApartmentServiceImpl.getInstance()
-                        .getAllWhereOrderByColumnOffsetNumOfRec(SortingType.valueOf(sortValue).getValue(),
-                                (page-1)*recordsPerPage, recordsPerPage, preOrderDTO.getNumberOfAdult(),
-                                preOrderDTO.getNumberOfChild(), preOrderDTO.getNumberOfRooms());
-                numberOfRecords = ApartmentServiceImpl.getInstance().countOfRowsWhere(preOrderDTO.getNumberOfAdult(),
-                        preOrderDTO.getNumberOfChild(), preOrderDTO.getNumberOfRooms());
+            //PAGINATION
+            int page = 1;
+            int recordsPerPage = 7;
+            if (req.getParameter("page") != null) {
+                page = Integer.parseInt(req.getParameter("page"));
             }
 
-            Map<Long, BookingStatus> apartmentBookingStatus = new HashMap<>();
-            for (ApartmentDTO apartment : apartmentList) {
-                if (apartment.getStatus() == ApartmentStatus.NOT_AVAILABLE) {
-                    apartmentBookingStatus.put(apartment.getId(), BookingStatus.NOT_AVAILABLE);
+            try {
+                List<ApartmentClassDTO> apartmentClassList = ApartmentClassServiceImpl.getInstance().getAll();
+                List<BookingDTO> bookingList = BookingServiceImpl.getInstance().getAll();
+                List<ApartmentImageDTO> apartmentImageList = ApartmentImageServiceImpl.getInstance().getAll();
+                List<ApartmentDTO> apartmentList = null;
+
+                String sortValue = "APC_ID";
+                if (req.getSession().getAttribute("opt_val") != null) {
+                    sortValue = String.valueOf(req.getSession().getAttribute("opt_val"));
                 }
-                if (apartment.getStatus() == ApartmentStatus.AVAILABLE) {
-                    boolean flag = true;
-                    for (BookingDTO booking : bookingList) {
-                        if (booking.getApartmentId() == apartment.getId()) {
-                            if (booking.getDateOut().getTime() >= preOrderDTO.getCheckIn().getTime()
-                                    && booking.getDateIn().getTime() <= preOrderDTO.getCheckOut().getTime()) {
-                                apartmentBookingStatus.put(apartment.getId(), booking.getStatus());
-                                flag = false;
-                                break;
+                if (req.getParameter("button_sort") != null) {
+                    sortValue = req.getParameter("sort_by");
+                }
+                req.getSession().setAttribute("opt_val", sortValue);
+
+                long numberOfRecords;
+                if (sortValue.equals("ST")) {
+                    apartmentList = ApartmentServiceImpl.getInstance().getAllWhereThreeCondition(preOrderDTO.getNumberOfAdult(),
+                            preOrderDTO.getNumberOfChild(), preOrderDTO.getNumberOfRooms());
+                    numberOfRecords = apartmentList.size();
+                } else {
+                    apartmentList = ApartmentServiceImpl.getInstance()
+                            .getAllWhereOrderByColumnOffsetNumOfRec(SortingType.valueOf(sortValue).getValue(),
+                                    (page-1)*recordsPerPage, recordsPerPage, preOrderDTO.getNumberOfAdult(),
+                                    preOrderDTO.getNumberOfChild(), preOrderDTO.getNumberOfRooms());
+                    numberOfRecords = ApartmentServiceImpl.getInstance().countOfRowsWhere(preOrderDTO.getNumberOfAdult(),
+                            preOrderDTO.getNumberOfChild(), preOrderDTO.getNumberOfRooms());
+                }
+
+                Map<Long, BookingStatus> apartmentBookingStatus = new HashMap<>();
+                for (ApartmentDTO apartment : apartmentList) {
+                    if (apartment.getStatus() == ApartmentStatus.NOT_AVAILABLE) {
+                        apartmentBookingStatus.put(apartment.getId(), BookingStatus.NOT_AVAILABLE);
+                    }
+                    if (apartment.getStatus() == ApartmentStatus.AVAILABLE) {
+                        boolean flag = true;
+                        for (BookingDTO booking : bookingList) {
+                            if (booking.getApartmentId().equals(apartment.getId())) {
+                                if (booking.getDateOut().getTime() >= preOrderDTO.getCheckIn().getTime()
+                                        && booking.getDateIn().getTime() <= preOrderDTO.getCheckOut().getTime()) {
+                                    apartmentBookingStatus.put(apartment.getId(), booking.getStatus());
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (flag) {
+                            apartmentBookingStatus.put(apartment.getId(), BookingStatus.EMPTY);
+                        }
+                    }
+                }
+
+                if (sortValue.equals("ST")) {
+                    LinkedHashMap<Long, BookingStatus> sortedMap = apartmentBookingStatus.entrySet().stream()
+                            .sorted(Map.Entry.comparingByValue())
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey,
+                                    Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                    List<ApartmentDTO> apartmentStatusSorted = new ArrayList<>();
+                    for (Long id : sortedMap.keySet()) {
+                        for (ApartmentDTO apartment : apartmentList) {
+                            if (id.equals(apartment.getId())) {
+                                apartmentStatusSorted.add(apartment);
                             }
                         }
                     }
-                    if (flag) {
-                        apartmentBookingStatus.put(apartment.getId(), BookingStatus.EMPTY);
+
+                    apartmentList = new ArrayList<>();
+                    for (int i = (page-1)*(recordsPerPage); i < page*recordsPerPage && i < numberOfRecords; i++) {
+                        apartmentList.add(apartmentStatusSorted.get(i));
                     }
+                    req.setAttribute("apartmentBookingStatus", sortedMap);
+                } else {
+                    req.setAttribute("apartmentBookingStatus", apartmentBookingStatus);
                 }
+
+                int noOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
+                req.setAttribute("apartmentList", apartmentList);
+                req.setAttribute("noOfPages", noOfPages);
+                req.setAttribute("currentPage", page);
+                req.setAttribute("apartmentClassList", apartmentClassList);
+                req.setAttribute("apartmentImageList", apartmentImageList);
+
+            } catch (DBException e) {
+                logger.warn("Cannot get parameters", e);
+                req.setAttribute("errorMessage", e.getMessage());
+                req.getRequestDispatcher(req.getContextPath() + "/pages/error.jsp").forward(req, resp);
             }
-
-            if (sortValue.equals("ST")) {
-                LinkedHashMap<Long, BookingStatus> sortedMap = apartmentBookingStatus.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue())
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-                List<ApartmentDTO> apartmentStatusSorted = new ArrayList<>();
-                for (Long id : sortedMap.keySet()) {
-                    for (ApartmentDTO apartment : apartmentList) {
-                        if (id == apartment.getId()) {
-                            apartmentStatusSorted.add(apartment);
-                        }
-                    }
-                }
-
-                apartmentList = new ArrayList<>();
-                for (int i = (page-1)*(recordsPerPage); i < page*recordsPerPage && i < numberOfRecords; i++) {
-                    apartmentList.add(apartmentStatusSorted.get(i));
-                }
-                req.setAttribute("apartmentBookingStatus", sortedMap);
-            } else {
-                req.setAttribute("apartmentBookingStatus", apartmentBookingStatus);
-            }
-
-            int noOfPages = (int) Math.ceil(numberOfRecords * 1.0 / recordsPerPage);
-            req.setAttribute("apartmentList", apartmentList);
-            req.setAttribute("noOfPages", noOfPages);
-            req.setAttribute("currentPage", page);
-            req.setAttribute("apartmentClassList", apartmentClassList);
-            req.setAttribute("apartmentImageList", apartmentImageList);
-
-        } catch (DBException e) {
-            logger.warn("Cannot get parameters", e);
-            req.setAttribute("errorMessage", e.getMessage());
-            req.getRequestDispatcher(req.getContextPath() + "/pages/error.jsp").forward(req, resp);
         }
-
         req.getRequestDispatcher("/pages/booking.jsp").forward(req, resp);
     }
 }

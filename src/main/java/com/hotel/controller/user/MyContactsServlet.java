@@ -20,19 +20,8 @@ public class MyContactsServlet extends HttpServlet {
     private static Logger logger = LogManager.getLogger(MyContactsServlet.class);
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("PersonalCabinetServlet#doPost");
-        req.setCharacterEncoding("UTF-8");
-        resp.setContentType("text/html; charset=UTF-8");
-
-        for (Map.Entry<String, String[]> stringEntry : req.getParameterMap().entrySet()) {
-            logger.info(stringEntry.getKey() + " " + stringEntry.getValue());
-        }
-    }
-
-    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("PersonalCabinetServlet#doGet");
+        logger.trace("PersonalCabinetServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
 
         req.getRequestDispatcher("/pages/user/myContacts.jsp").forward(req, resp);

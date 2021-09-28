@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This class uses to handle requests from myBookings.jsp. Method doGet prepares data for myBookings.jsp, where user can
- * see all his orders and pre-orders. If the order was not paid then user can choose pay for this order or cancel it. Also
+ * see all his orders and pre-orders. If the order was not paid then user can choose pay for this order or cancel booking. Also
  * user can check the status of his pre-order and if it was processed by the manager, user can view and book the apartment.
  * Method doPost handles data that it gets from the user.
  *
@@ -29,7 +29,7 @@ public class UserOrdersServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("UserOrdersServlet#doPost");
+        logger.trace("UserOrdersServlet#doPost");
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
@@ -49,7 +49,6 @@ public class UserOrdersServlet extends HttpServlet {
         } else {
             address = "/reviewRoom";
             Long preOrderId = Long.valueOf(req.getParameter("pre_order_id"));
-            System.out.println(preOrderId);
 
             PreOrderDTO preOrderDTO = null;
             try {
@@ -66,7 +65,7 @@ public class UserOrdersServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("UserOrdersServlet#doGet");
+        logger.trace("UserOrdersServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
 
         UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
@@ -79,9 +78,9 @@ public class UserOrdersServlet extends HttpServlet {
                 List<ApartmentImageDTO> apartmentImageList = ApartmentImageServiceImpl.getInstance().getAll();
                 req.setAttribute("apartmentImageList", apartmentImageList);
                 List<ApartmentDTO> apartments = ApartmentServiceImpl.getInstance().getAll();
-                req.getSession().setAttribute("apartments", apartments);//???? req.setAttribute()
+                req.setAttribute("apartments", apartments);
                 List<ApartmentClassDTO> apartmentClassList = ApartmentClassServiceImpl.getInstance().getAll();
-                req.getSession().setAttribute("apartmentClassList", apartmentClassList); //??? req.setAttribute()
+                req.setAttribute("apartmentClassList", apartmentClassList);
             } catch (DBException e) {
                 logger.warn("Cannot get parameters", e);
                 req.setAttribute("errorMessage", e.getMessage());

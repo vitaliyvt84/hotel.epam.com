@@ -20,7 +20,7 @@ import java.io.IOException;
 
 /**
  * This class uses to handle requests from payment.jsp. According to booking_id method doGet takes data from DB and sends
- * them to payment.jsp. Method doPost takes req from payment.jsp and if user choose button 'Pay' than check user entered
+ * them to payment.jsp. Method doPost takes request from payment.jsp and if user choose button 'Pay' than check user entered
  * data and makes payment. If user choose 'Cancel payment' than payment is canceled.
  *
  */
@@ -30,31 +30,25 @@ public class PaymentServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("PaymentServlet#doPost");
+        logger.trace("PaymentServlet#doPost");
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
-        logger.info("============");
-        for (String valueName : req.getSession().getValueNames()) {
-            logger.info(valueName);
+        Long bookingId = null;
+        if (req.getSession().getAttribute("bookingId") != null) {
+            bookingId = Long.valueOf(String.valueOf(req.getSession().getAttribute("bookingId")));
         }
-
-        System.out.println(req.getSession().getAttribute("bookingId"));
         String payStatus = req.getParameter("pay");
-        Long bookingId = Long.valueOf(String.valueOf(req.getSession().getAttribute("bookingId")));
 
-        if (payStatus.equals("payOk")) {
-
-            if (bookingId != null) {
-                try {
-                    BookingDTO bookingDTO = BookingServiceImpl.getInstance().getById(bookingId);
-                    bookingDTO.setStatus(BookingStatus.OCCUPIED);
-                    BookingServiceImpl.getInstance().update(bookingDTO);
-                } catch (DBException e) {
-                    logger.warn("Cannot update booking", e);
-                    req.setAttribute("errorMessage", e.getMessage());
-                    req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
-                }
+        if (payStatus.equals("payOk") && bookingId != null) {
+            try {
+                BookingDTO bookingDTO = BookingServiceImpl.getInstance().getById(bookingId);
+                bookingDTO.setStatus(BookingStatus.OCCUPIED);
+                BookingServiceImpl.getInstance().update(bookingDTO);
+            } catch (DBException e) {
+                logger.warn("Cannot update booking", e);
+                req.setAttribute("errorMessage", e.getMessage());
+                req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
             }
             req.getSession().setAttribute("payMessage", "Congratulations!!!!!!");
         } else {
@@ -71,24 +65,25 @@ public class PaymentServlet extends HttpServlet {
             req.getSession().setAttribute("payMessage", "Booking canceled!!!!!!");
         }
 
-        //resp.sendRedirect(req.getContextPath() + "/pages/greetings.jsp");
         resp.sendRedirect(req.getContextPath() + "/");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("PaymentServlet#doGet");
+        logger.trace("PaymentServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
-        Long bookingId = Long.valueOf(String.valueOf(req.getSession().getAttribute("bookingId")));
-        try {
-            BookingDTO bookingDTO = BookingServiceImpl.getInstance().getById(bookingId);
-            req.setAttribute("bookingDTO", bookingDTO);
-        } catch (DBException e) {
-            logger.warn("Cannot get parameters", e);
-            req.setAttribute("errorMessage", e.getMessage());
-            req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
+        Long bookingId = null;
+        if (req.getSession().getAttribute("bookingId") != null) {
+            bookingId = Long.valueOf(String.valueOf(req.getSession().getAttribute("bookingId")));
+            try {
+                BookingDTO bookingDTO = BookingServiceImpl.getInstance().getById(bookingId);
+                req.setAttribute("bookingDTO", bookingDTO);
+            } catch (DBException e) {
+                logger.warn("Cannot get parameters", e);
+                req.setAttribute("errorMessage", e.getMessage());
+                req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
+            }
         }
-
         req.getRequestDispatcher("/pages/user/payment.jsp").forward(req, resp);
     }
 }

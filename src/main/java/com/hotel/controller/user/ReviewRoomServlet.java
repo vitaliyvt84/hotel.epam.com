@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This class uses to handle requests from reviewRoom.jsp. Method doGet prepares data for reviewRoom.jsp, where the user
- * can choose book the apartment or cancel the order, or go back to select another apartment. Method doPost takes data from
+ * can choose: book the apartment or cancel the order, or go back to select another apartment. Method doPost takes data from
  * reviewRoom.jsp and if user choose 'Booking the room' creates the booking and saves it to DB, if the apartment was
  * selected from the managers link than it saves status of pre-order to DB - COMPLETED, otherwise if user choose
  * 'Cancel the order' than it saves status of pre-order to DB - CANCELED.
@@ -32,17 +32,23 @@ public class ReviewRoomServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("ReviewRoomServlet#doPost");
+        logger.trace("ReviewRoomServlet#doPost");
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
-        PreOrderDTO preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
+        PreOrderDTO preOrderDTO = null;
+        if (req.getSession().getAttribute("preOrderDTO") != null) {
+            preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
+        }
+
         if (req.getParameter("book_room").equals("book")) {
             try {
-                //Long bookRoomId = Long.valueOf(String.valueOf(req.getSession().getAttribute("bookRoomId")));
-
-                UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
-                Double totalPrice = (Double) req.getSession().getAttribute("totalPrice");
+                UserDTO userDTO = null;
+                Double totalPrice = null;
+                if (req.getSession().getAttribute("user") != null && req.getSession().getAttribute("totalPrice") != null) {
+                    userDTO = (UserDTO) req.getSession().getAttribute("user");
+                    totalPrice = (Double) req.getSession().getAttribute("totalPrice");
+                }
 
                 if (preOrderDTO != null && userDTO != null && totalPrice != null) {
                     List<BookingDTO> bookingList = BookingServiceImpl.getInstance().getAll();
@@ -50,12 +56,11 @@ public class ReviewRoomServlet extends HttpServlet {
 
                     boolean flag = true;
                     for (BookingDTO booking : bookingList) {
-                        if (booking.getApartmentId() == apartment.getId()) {
-                            if (booking.getDateOut().getTime() >= preOrderDTO.getCheckIn().getTime()
-                                    && booking.getDateIn().getTime() <= preOrderDTO.getCheckOut().getTime()) {
-                                flag = false;
-                                break;
-                            }
+                        if (booking.getApartmentId() == apartment.getId()
+                                && booking.getDateOut().getTime() >= preOrderDTO.getCheckIn().getTime()
+                                && booking.getDateIn().getTime() <= preOrderDTO.getCheckOut().getTime()) {
+                            flag = false;
+                            break;
                         }
                     }
                     if (flag && apartment.getStatus() == ApartmentStatus.AVAILABLE) {
@@ -72,7 +77,6 @@ public class ReviewRoomServlet extends HttpServlet {
                         long bookingId = BookingServiceImpl.getInstance().save(bookingDTO);
                         req.getSession().setAttribute("bookingId", bookingId);
                         if (preOrderDTO.getStatus() != null) {
-                            logger.info("EXISTS PRE ORDER STATUS!!!" + preOrderDTO.getStatus().getValue());
                             preOrderDTO.setStatus(PreOrderStatus.COMPLETED);
                             PreOrderServiceImpl.getInstance().update(preOrderDTO);
                         }
@@ -89,11 +93,8 @@ public class ReviewRoomServlet extends HttpServlet {
                 req.getRequestDispatcher(req.getContextPath()+"/pages/error.jsp").forward(req, resp);
             }
         } else {
-            logger.info("Нужно ВСЕ ОТЧИСТИТЬ!!! Session!!!!");
-            //logger.info("EXISTS PRE ORDER STATUS!!!" + preOrderDTO.getStatus().getValue());
             try {
                 if (preOrderDTO.getStatus() != null) {
-                    logger.info("EXISTS PRE ORDER STATUS!!!" + preOrderDTO.getStatus().getValue());
                     preOrderDTO.setStatus(PreOrderStatus.CANCELED);
                     PreOrderServiceImpl.getInstance().update(preOrderDTO);
                 }
@@ -106,13 +107,16 @@ public class ReviewRoomServlet extends HttpServlet {
         }
     }
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("ReviewRoomServlet#doGet");
+        logger.trace("ReviewRoomServlet#doGet");
         resp.setContentType("text/html; charset=UTF-8");
 
-        PreOrderDTO preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
+        PreOrderDTO preOrderDTO = null;
+        if (req.getSession().getAttribute("preOrderDTO") != null) {
+            preOrderDTO = (PreOrderDTO) req.getSession().getAttribute("preOrderDTO");
+        }
+
         if (preOrderDTO != null) {
             try {
                 ApartmentDTO apartment = ApartmentServiceImpl.getInstance().getById(preOrderDTO.getApartmentId());
@@ -131,7 +135,6 @@ public class ReviewRoomServlet extends HttpServlet {
                 if (apartmentClass != null) {
                     req.setAttribute("apartmentClass", apartmentClass);
                 }
-
             } catch (DBException e) {
                 logger.warn("Cannot get parameters", e);
                 req.setAttribute("errorMessage", e.getMessage());
